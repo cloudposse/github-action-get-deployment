@@ -26,7 +26,8 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               environment: "staging",
-              ref: context.sha
+              ref: context.sha,
+              required_contexts: []
             });
             
             return result.data.deployment.id
