@@ -82,7 +82,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               deployment_id: ${{ needs.setup.outputs.id }}
-              state: 'inactive'
+              state: 'destroyed'
             });                
             
             const result = await github.rest.repos.deleteDeployment({
