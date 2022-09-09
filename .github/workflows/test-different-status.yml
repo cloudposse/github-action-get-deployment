@@ -27,7 +27,7 @@ jobs:
             const result = await github.rest.repos.createDeployment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              environment: ${{ steps.context.outputs.environment }},
+              environment: "${{ steps.context.outputs.environment }}",
               transient_environment: true,
               ref: context.sha,
               required_contexts: []
@@ -35,6 +35,7 @@ jobs:
 
             return result.data.id
           result-encoding: string
+
     outputs:
       id: ${{ steps.deployment.outputs.result }}
       environment: ${{ steps.context.outputs.environment }}
