@@ -80,7 +80,8 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           environment: staging
           ref: ${{ github.sha }}
-
+          onlyRemoveDeployments: true
+          
 #      - uses: actions/github-script@v6
 #        id: deployment
 #        with:
