@@ -29,8 +29,15 @@ jobs:
               ref: context.sha,
               required_contexts: []
             });
-            console.log(result)
-            return result.data.deployment.id
+            
+            await github.rest.repos.createDeploymentStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              deployment_id: result.data.id,
+              state: 'success'
+            });            
+            
+            return result.data.id
           result-encoding: string
     outputs:
       id: ${{ steps.deployment.outputs.result }}
