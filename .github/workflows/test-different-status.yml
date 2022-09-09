@@ -78,7 +78,7 @@ jobs:
 
       - uses: strumwolf/delete-deployment-environment@v2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PUBLIC_REPO_ACCESS_TOKEN }}
           environment: ${{ needs.setup.outputs.environment }}
           ref: ${{ github.sha }}
 #          onlyRemoveDeployments: true
