@@ -22,7 +22,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               environment: 'staging',
-              ref: context.ref
+              ref: context.sha
             });
 
             await github.rest.repos.createDeploymentStatus({
@@ -50,7 +50,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           env-name: 'staging'
-          ref-to-search: ${{ github.ref }}
+          ref-to-search: ${{ github.sha }}
           status: success
 
     outputs:
