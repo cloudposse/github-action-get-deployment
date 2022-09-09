@@ -14,9 +14,9 @@ jobs:
       - name: Setup
         run: echo "Do setup"
 
-      - name: Debug
-        run: |
-          echo "${{ toJSON(github) }}"
+#      - name: Debug
+#        run: |
+#          echo "${{ toJSON(github) }}"
 
       - uses: actions/github-script@v6
         id: deployment
@@ -25,8 +25,8 @@ jobs:
             let result = await github.rest.repos.createDeployment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              environment: 'staging',
-              ref: context.ref
+              environment: "staging",
+              ref: context.sha
             });
             
             return result.data.deployment.id
