@@ -85,11 +85,11 @@ jobs:
               state: 'destroyed'
             });                
             
-            const result = await github.rest.repos.deleteDeployment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              deployment_id: ${{ needs.setup.outputs.id }}
-            });
-            
-            return result.status == 200
+            #            const result = await github.rest.repos.deleteDeployment({
+            #              owner: context.repo.owner,
+            #              repo: context.repo.repo,
+            #              deployment_id: ${{ needs.setup.outputs.id }}
+            #            });
+            #            
+            #            return result.status == 200
           result-encoding: string
