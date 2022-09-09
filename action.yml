@@ -12,7 +12,7 @@ inputs:
     description: 'Environment name'
     required: true
   status:
-    description: 'status to get ID for'
+    description: 'Deployment status'
     required: false
 outputs:
   id: 
