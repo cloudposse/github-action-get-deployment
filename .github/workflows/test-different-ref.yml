@@ -1,0 +1,90 @@
+name: Test Different ref
+on:
+  #  # Uncomment when test added first time to register workflow and comment it back after workflow would be registered
+  #  #
+  #  # Added pull_request to register workflow from the PR.
+  #  # Read more https://stackoverflow.com/questions/63362126/github-actions-how-to-run-a-workflow-created-on-a-non-master-branch-from-the-wo
+  pull_request: {}
+  workflow_dispatch: {}
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup
+        run: echo "Do setup"
+
+      - name: Context
+        id: context
+        shell: sh
+        run: |
+          echo "::set-output name=environment::run-${{ github.run_id }}-${{ github.run_number }}"
+
+      - uses: actions/github-script@v6
+        id: deployment
+        with:
+          script: |
+            const result = await github.rest.repos.createDeployment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              environment: "${{ steps.context.outputs.environment }}",
+              transient_environment: true,
+              ref: context.sha,
+              required_contexts: []
+            });
+            
+            await github.rest.repos.createDeploymentStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              deployment_id: result.data.id,
+              state: 'success'
+            });            
+
+            return result.data.id
+          result-encoding: string
+
+    outputs:
+      id: ${{ steps.deployment.outputs.result }}
+      environment: ${{ steps.context.outputs.environment }}
+
+  test:
+    runs-on: ubuntu-latest
+    needs: [setup]
+    continue-on-error: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - uses: ./
+        id: current
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          env-name: ${{ needs.setup.outputs.environment }}
+          ref-to-search: ${{ github.ref }}
+          status: success
+
+    outputs:
+      result: ${{ steps.current.outputs.deploymentId }}
+
+  assert:
+    runs-on: ubuntu-latest
+    needs: [test, setup]
+    steps:
+      - uses: nick-fields/assert-action@v1
+        with:
+          expected: ''
+          actual: ${{ needs.test.outputs.result }}
+
+  teardown:
+    runs-on: ubuntu-latest
+    needs: [assert, setup ]
+    if: ${{ always() }}
+    steps:
+      - name: Tear down
+        run: echo "Do Tear down"
+
+      - uses: strumwolf/delete-deployment-environment@v2
+        with:
+          token: ${{ secrets.PUBLIC_REPO_ACCESS_TOKEN }}
+          environment: ${{ needs.setup.outputs.environment }}
+          ref: ${{ github.sha }}
