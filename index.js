@@ -22,7 +22,7 @@ if (process.env.refToSearch)
 }
 else
 {
-    refToSearch = core.getInput('ref-to-search');
+    refToSearch = core.getInput('ref');
 }
 
 let envName = "";
@@ -33,7 +33,7 @@ if (process.env.envName)
 }
 else
 {
-    envName = core.getInput('env-name');
+    envName = core.getInput('environment');
 }
 
 let status = "";
@@ -98,7 +98,7 @@ async function getDeployments(envName)
         console.log('With status ' + status)
         if (status === "") {
             console.log('Output deployment id ' + deploymentId)
-            core.setOutput("deploymentId", deploymentId);
+            core.setOutput("id", deploymentId);
         }
         else {
             const { data: statuses }  = await github.getOctokit(myToken).repos.listDeploymentStatuses({
@@ -112,7 +112,7 @@ async function getDeployments(envName)
                 console.log('Current status ' + deployment_status)
                 if (status == deployment_status) {
                     console.log('Output deployment id ' + deploymentId)
-                    core.setOutput("deploymentId", deploymentId);
+                    core.setOutput("id", deploymentId);
                 }
             }
         }

@@ -5,18 +5,18 @@ inputs:
     description: The GitHub token used to create an authenticated client
     default: ${{ github.token }}
     required: true
-  ref-to-search:
-    description: 'ref of the branch/commit to search by'
+  ref:
+    description: 'Branch or commit SHA'
     required: true
-  env-name:
-    description: 'environment name to get ID for'
+  environment:
+    description: 'Environment name'
     required: true
   status:
     description: 'status to get ID for'
     required: false
 outputs:
-  deploymentId: 
-    description: 'deployment id retrieved based on ref and environment'
+  id: 
+    description: 'Deployment ID'
 runs:
   using: 'node12'
   main: 'index.js'

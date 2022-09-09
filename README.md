@@ -80,8 +80,8 @@ It's 100% Open Source and licensed under the [APACHE2](LICENSE).
           id: deployment
           with:
             github-token: ${{ secrets.GITHUB_TOKEN }}
-            env-name: dev
-            ref-to-search: ${{ github.event.pull_request.head.ref }}
+            environment: dev
+            ref: ${{ github.event.pull_request.head.ref }}
             status: success
 
       outputs:
