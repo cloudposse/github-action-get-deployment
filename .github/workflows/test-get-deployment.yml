@@ -85,12 +85,5 @@ jobs:
               deployment_id: ${{ needs.setup.outputs.id }},
               state: 'inactive'
             });                
-            
-            #            const result = await github.rest.repos.deleteDeployment({
-            #              owner: context.repo.owner,
-            #              repo: context.repo.repo,
-            #              deployment_id: ${{ needs.setup.outputs.id }}
-            #            });
-            #            
-            #            return result.status == 200
+
           result-encoding: string
