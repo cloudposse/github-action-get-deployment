@@ -1,0 +1,74 @@
+---
+#
+# This is the canonical configuration for the `README.md`
+# Run `make readme` to rebuild the `README.md`
+#
+
+# Name of this project
+name: github-action-get-deployment
+
+# Tags of this project
+tags:
+  - github-action
+
+# Logo for this project
+#logo: docs/logo.png
+
+# License of this project
+license: "APACHE2"
+
+# Canonical GitHub repo
+github_repo: cloudposse/github-action-get-deployment
+
+# Badges to display
+badges:
+  - name: "Latest Release"
+    image: "https://img.shields.io/github/release/cloudposse/github-action-get-deployment.svg"
+    url: "https://github.com/cloudposse/github-action-get-deployment/releases/latest"
+  - name: "Slack Community"
+    image: "https://slack.cloudposse.com/badge.svg"
+    url: "https://slack.cloudposse.com"
+
+related: []
+
+# Short description of this project
+description: Get GitHub deployment object by ref and environment name
+
+references:
+  - name: "github-actions-workflows"
+    description: "Reusable workflows for different types of projects"
+    url: "https://github.com/cloudposse/github-actions-workflows"
+
+# How to use this project
+usage: |-
+  ```yaml
+    name: Pull Request
+    on:
+      pull_request:
+        branches: [ 'main' ]
+        types: [opened, synchronize, reopened, closed, labeled, unlabeled]
+
+    jobs:
+      context:
+        runs-on: ubuntu-latest
+        steps:
+          - name: Seek deployment
+            uses: cloudposse/github-action-get-deployment@main
+            id: deployment
+            with:
+              github-token: ${{ secrets.GITHUB_TOKEN }}
+              env-name: dev
+              ref-to-search: ${{ github.event.pull_request.head.ref }}
+              status: success
+
+        outputs:
+          id: "${{ steps.deployment.outputs.deploymentId }}"
+  ```
+
+include:
+  - "docs/github-action.md"
+
+# Contributors to this project
+contributors:
+  - name: "Igor Rodionov"
+    github: "goruha"
