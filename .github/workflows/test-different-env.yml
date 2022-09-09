@@ -1,10 +1,10 @@
-name: Test Different status
+name: Test Different environment
 on:
   #  # Uncomment when test added first time to register workflow and comment it back after workflow would be registered
   #  #
   #  # Added pull_request to register workflow from the PR.
   #  # Read more https://stackoverflow.com/questions/63362126/github-actions-how-to-run-a-workflow-created-on-a-non-master-branch-from-the-wo
-  # pull_request: {}
+  pull_request: {}
   workflow_dispatch: {}
 
 jobs:
@@ -32,6 +32,13 @@ jobs:
               ref: context.sha,
               required_contexts: []
             });
+            
+            await github.rest.repos.createDeploymentStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              deployment_id: result.data.id,
+              state: 'success'
+            });            
 
             return result.data.id
           result-encoding: string
@@ -52,7 +59,7 @@ jobs:
         id: current
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          env-name: ${{ needs.setup.outputs.environment }}
+          env-name: 'dev'
           ref-to-search: ${{ github.sha }}
           status: success
 
