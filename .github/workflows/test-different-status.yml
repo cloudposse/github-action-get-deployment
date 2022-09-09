@@ -81,24 +81,3 @@ jobs:
           token: ${{ secrets.PUBLIC_REPO_ACCESS_TOKEN }}
           environment: ${{ needs.setup.outputs.environment }}
           ref: ${{ github.sha }}
-#          onlyRemoveDeployments: true
-          
-#      - uses: actions/github-script@v6
-#        id: deployment
-#        with:
-#          script: |
-#            await github.rest.repos.createDeploymentStatus({
-#              owner: context.repo.owner,
-#              repo: context.repo.repo,
-#              deployment_id: ${{ needs.setup.outputs.id }},
-#              state: 'inactive'
-#            });
-#
-#            const result = await github.rest.repos.deleteDeployment({
-#              owner: context.repo.owner,
-#              repo: context.repo.repo,
-#              deployment_id: ${{ needs.setup.outputs.id }}
-#            });
-#
-#            return result.status == 200
-#          result-encoding: string
