@@ -1,0 +1,96 @@
+name: Test Get Deployment with different status
+on:
+  #  # Uncomment when test added first time to register workflow and comment it back after workflow would be registered
+  #  #
+  #  # Added pull_request to register workflow from the PR.
+  #  # Read more https://stackoverflow.com/questions/63362126/github-actions-how-to-run-a-workflow-created-on-a-non-master-branch-from-the-wo
+  #  pull_request: {}
+  workflow_dispatch: {}
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup
+        run: echo "Do setup"
+
+      - uses: actions/github-script@v6
+        id: deployment
+        with:
+          script: |
+            const result = await github.rest.repos.createDeployment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              environment: "staging",
+              transient_environment: true,
+              ref: context.sha,
+              required_contexts: []
+            });
+
+            return result.data.id
+          result-encoding: string
+    outputs:
+      id: ${{ steps.deployment.outputs.result }}
+
+  test:
+    runs-on: ubuntu-latest
+    needs: [setup]
+    continue-on-error: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - uses: ./
+        id: current
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          env-name: 'staging'
+          ref-to-search: ${{ github.sha }}
+          status: success
+
+    outputs:
+      result: ${{ steps.current.outputs.deploymentId }}
+
+  assert:
+    runs-on: ubuntu-latest
+    needs: [test, setup]
+    steps:
+      - uses: nick-fields/assert-action@v1
+        with:
+          expected: ${{ needs.setup.outputs.id }}
+          actual: ${{ needs.test.outputs.result }}
+
+  teardown:
+    runs-on: ubuntu-latest
+    needs: [assert, setup ]
+    if: ${{ always() }}
+    steps:
+      - name: Tear down
+        run: echo "Do Tear down"
+
+      - uses: strumwolf/delete-deployment-environment@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          environment: staging
+          ref: ${{ github.sha }}
+          onlyRemoveDeployments: true
+          
+#      - uses: actions/github-script@v6
+#        id: deployment
+#        with:
+#          script: |
+#            await github.rest.repos.createDeploymentStatus({
+#              owner: context.repo.owner,
+#              repo: context.repo.repo,
+#              deployment_id: ${{ needs.setup.outputs.id }},
+#              state: 'inactive'
+#            });
+#
+#            const result = await github.rest.repos.deleteDeployment({
+#              owner: context.repo.owner,
+#              repo: context.repo.repo,
+#              deployment_id: ${{ needs.setup.outputs.id }}
+#            });
+#
+#            return result.status == 200
+#          result-encoding: string
