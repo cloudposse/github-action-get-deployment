@@ -29,7 +29,7 @@ jobs:
               ref: context.sha,
               required_contexts: []
             });
-            
+            console.log(result)
             return result.data.deployment.id
           result-encoding: string
     outputs:
