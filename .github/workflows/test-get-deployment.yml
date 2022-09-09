@@ -59,7 +59,7 @@ jobs:
           status: success
 
     outputs:
-      result: ${{ steps.current.deploymentId }}
+      result: ${{ steps.current.outputs.deploymentId }}
 
   assert:
     runs-on: ubuntu-latest
