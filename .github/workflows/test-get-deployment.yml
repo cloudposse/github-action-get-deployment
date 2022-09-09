@@ -14,6 +14,12 @@ jobs:
       - name: Setup
         run: echo "Do setup"
 
+      - name: Context
+        id: context
+        shell: sh
+        run: |
+          echo "::set-output name=environment::run-${{ github.run_id }}-${{ github.run_number }}"
+
       - uses: actions/github-script@v6
         id: deployment
         with:
@@ -21,23 +27,17 @@ jobs:
             const result = await github.rest.repos.createDeployment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              environment: "staging",
+              environment: ${{ steps.context.outputs.environment }},
               transient_environment: true,
               ref: context.sha,
               required_contexts: []
             });
-            
-            await github.rest.repos.createDeploymentStatus({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              deployment_id: result.data.id,
-              state: 'success'
-            });            
-            
+
             return result.data.id
           result-encoding: string
     outputs:
       id: ${{ steps.deployment.outputs.result }}
+      environment: ${{ steps.context.outputs.environment }}
 
   test:
     runs-on: ubuntu-latest
@@ -51,7 +51,7 @@ jobs:
         id: current
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          env-name: 'staging'
+          env-name: ${{ needs.setup.outputs.environment }}
           ref-to-search: ${{ github.sha }}
           status: success
 
@@ -78,7 +78,7 @@ jobs:
       - uses: strumwolf/delete-deployment-environment@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          environment: staging
+          environment: ${{ needs.setup.outputs.environment }}
           ref: ${{ github.sha }}
           onlyRemoveDeployments: true
           
