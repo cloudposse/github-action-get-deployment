@@ -22,6 +22,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               environment: "staging",
+              transient_environment: true,
               ref: context.sha,
               required_contexts: []
             });
