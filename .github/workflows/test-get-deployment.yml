@@ -81,8 +81,8 @@ jobs:
             await github.rest.repos.createDeploymentStatus({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              deployment_id: ${{ needs.setup.outputs.id }}
-              state: 'destroyed'
+              deployment_id: ${{ needs.setup.outputs.id }},
+              state: "destroyed"
             });                
             
             #            const result = await github.rest.repos.deleteDeployment({
