@@ -59,12 +59,12 @@ jobs:
         id: current
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          env-name: ${{ needs.setup.outputs.environment }}
-          ref-to-search: ${{ github.sha }}
+          environment: ${{ needs.setup.outputs.environment }}
+          ref: ${{ github.sha }}
           status: success
 
     outputs:
-      result: ${{ steps.current.outputs.deploymentId }}
+      result: ${{ steps.current.outputs.id }}
 
   assert:
     runs-on: ubuntu-latest
