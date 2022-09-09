@@ -81,7 +81,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           environment: ${{ needs.setup.outputs.environment }}
           ref: ${{ github.sha }}
-          onlyRemoveDeployments: true
+#          onlyRemoveDeployments: true
           
 #      - uses: actions/github-script@v6
 #        id: deployment
