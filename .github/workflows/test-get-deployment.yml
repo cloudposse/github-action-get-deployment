@@ -42,6 +42,7 @@ jobs:
 
             return result.data.id
           result-encoding: string
+
     outputs:
       id: ${{ steps.deployment.outputs.result }}
       environment: ${{ steps.context.outputs.environment }}
