@@ -1,4 +1,5 @@
 <!-- markdownlint-disable -->
+
 ## Inputs
 
 | Name | Description | Default | Required |
@@ -7,6 +8,7 @@
 | github-token | The GitHub token | ${{ github.token }} | true |
 | ref | Branch or commit SHA | N/A | true |
 | status | Deployment status | N/A | false |
+
 
 ## Outputs
 
