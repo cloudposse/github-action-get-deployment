@@ -86,13 +86,13 @@ async function getDeployments(envName)
     if (deployments.length > 0) {
         let deploymentIds = []
 
-        for (let i=0; i<deployments.length; i++){
+        for (let i = 0 ; i < deployments.length ; i++){
           let deployment = deployments[i]
 
           console.log('For environment ' + deployment.environment)
-          const deploymentId = deployment.id
-          const deploymentCreatedAt = deployment.created_at
-          const deploymentUpdatedAt = deployment.updated_at
+          let deploymentId = deployment.id
+          let deploymentCreatedAt = deployment.created_at
+          let deploymentUpdatedAt = deployment.updated_at
           console.log('For ref ' + deployment.ref)
           console.log("Deployment ID: " + deploymentId)
           console.log("Created at: " + deploymentCreatedAt)
@@ -104,7 +104,7 @@ async function getDeployments(envName)
               deploymentIds.push(deploymentId)
           }
           else {
-              const { data: statuses }  = await github.getOctokit(myToken).repos.listDeploymentStatuses({
+              let { data: statuses }  = await github.getOctokit(myToken).repos.listDeploymentStatuses({
                   owner: github.context.repo.owner,
                   repo: github.context.repo.repo,
                   deployment_id: deployment.id
