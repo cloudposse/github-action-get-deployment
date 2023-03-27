@@ -122,8 +122,8 @@ async function getDeployments(envName)
         }
         console.log('Output top deployment id ' + deploymentIds[0])
         core.setOutput("id", deploymentIds[0]);
-        console.log('Output deployment id list' + deploymentIds)
-        core.setOutput("ids", deploymentIds);
+        console.log('Output deployment id list' + deploymentIds.toString())
+        core.setOutput("ids", deploymentIds.toString());
     }
 }
 
