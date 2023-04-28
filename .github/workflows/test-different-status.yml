@@ -18,7 +18,7 @@ jobs:
         id: context
         shell: sh
         run: |
-          echo "::set-output name=environment::run-${{ github.run_id }}-${{ github.run_number }}"
+          echo "environment=run-${{ github.run_id }}-${{ github.run_number }}" >> $GITHUB_OUTPUT
 
       - uses: actions/github-script@v6
         id: deployment
