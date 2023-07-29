@@ -20,7 +20,9 @@ inputs:
     required: false
 outputs:
   id: 
-    description: 'Deployment ID'
+    description: 'Top Deployment ID'
+  ids: 
+    description: 'All Matching Deployment IDs'
 runs:
   using: 'node12'
   main: 'index.js'

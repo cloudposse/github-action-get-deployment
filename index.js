@@ -84,38 +84,46 @@ async function getDeployments(envName)
 {
     let deployments = await listDeployments(refToSearch, envName);
     if (deployments.length > 0) {
-        let deployment = deployments[0]
+        let deploymentIds = []
 
-        console.log('For environment ' + deployment.environment)
-        const deploymentId = deployment.id
-        const deploymentCreatedAt = deployment.created_at
-        const deploymentUpdatedAt = deployment.updated_at
-        console.log('For ref ' + deployment.ref)
-        console.log("Deployment ID: " + deploymentId)
-        console.log("Created at: " + deploymentCreatedAt)
-        console.log("Updated at: " + deploymentUpdatedAt)
+        for (let i = 0 ; i < deployments.length ; i++){
+          let deployment = deployments[i]
 
-        console.log('With status ' + status)
-        if (status === "") {
-            console.log('Output deployment id ' + deploymentId)
-            core.setOutput("id", deploymentId);
+          console.log('For environment ' + deployment.environment)
+          let deploymentId = deployment.id
+          let deploymentCreatedAt = deployment.created_at
+          let deploymentUpdatedAt = deployment.updated_at
+          console.log('For ref ' + deployment.ref)
+          console.log("Deployment ID: " + deploymentId)
+          console.log("Created at: " + deploymentCreatedAt)
+          console.log("Updated at: " + deploymentUpdatedAt)
+
+          console.log('With status ' + status)
+          if (status === "") {
+              console.log('Added deployment id ' + deploymentId)
+              deploymentIds.push(deploymentId)
+          }
+          else {
+              let { data: statuses }  = await github.getOctokit(myToken).repos.listDeploymentStatuses({
+                  owner: github.context.repo.owner,
+                  repo: github.context.repo.repo,
+                  deployment_id: deployment.id
+              })
+              console.log('Statuses length ' + statuses.length)
+              if (statuses.length > 0) {
+                  let deployment_status = statuses[0].state
+                  console.log('Current status ' + deployment_status)
+                  if (status == deployment_status) {
+                      console.log('Added deployment id ' + deploymentId)
+                      deploymentIds.push(deploymentId)
+                  }
+              }
+          }
         }
-        else {
-            const { data: statuses }  = await github.getOctokit(myToken).repos.listDeploymentStatuses({
-                owner: github.context.repo.owner,
-                repo: github.context.repo.repo,
-                deployment_id: deployment.id
-            })
-            console.log('Statuses length ' + statuses.length)
-            if (statuses.length > 0) {
-                let deployment_status = statuses[0].state
-                console.log('Current status ' + deployment_status)
-                if (status == deployment_status) {
-                    console.log('Output deployment id ' + deploymentId)
-                    core.setOutput("id", deploymentId);
-                }
-            }
-        }
+        console.log('Output top deployment id ' + deploymentIds[0])
+        core.setOutput("id", deploymentIds[0]);
+        console.log('Output deployment id list' + deploymentIds.toString())
+        core.setOutput("ids", deploymentIds.toString());
     }
 }
 
